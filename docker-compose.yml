@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  db:
+    build: ./db
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+  web1:
+    build: ./web
+    tty: true
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      WEB_PORT: ${WEB_PORT}
+    depends_on:
+      - db
+    restart: on-failure
+  web2:
+    build: ./web
+    tty: true
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      WEB_PORT: ${WEB_PORT}
+    depends_on:
+      - db
+    restart: on-failure
+  loadbalancer:
+      build: ./load-balancer
+      tty: true
+      links:
+          - web1
+          - web2
+      ports:
+          - '8080:8080'
+volumes:
+  web:
+
