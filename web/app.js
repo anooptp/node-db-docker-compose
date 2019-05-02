@@ -180,6 +180,7 @@ app.get('/characterAllegiance', function(req, res){
 		return;
 	});
 
+	console.log("rendering characterAllegiance page. . .");
 
 	connection.query(charQuery, function(error, results, fields){
 		if(error) throw error;
